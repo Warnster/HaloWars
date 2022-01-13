@@ -1,10 +1,11 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { GlobalContext } from "../../context/context"
-import { PLAYLIST_1v1_RANKED, PLAYLIST_2V2_RANKED, SEASON_15_ID } from "../../data/mappings"
+import { seasonData } from "../../data/seasons"
 import { useLeaderboard } from "../../hooks/metadata/Leaderboard"
-import { LeaderboardPlayer } from "../../interfaces/LeaderboardResponse"
+import { Playlist } from "../../interfaces/Playlist"
+import { PlaylistsEntity, Season } from "../../interfaces/Season"
 import { addHyphens } from "../../utils/entries"
-import { leaderBoardPerPage } from "../../utils/helpers"
+import { findPlaylist, leaderBoardPerPage } from "../../utils/helpers"
 import { Page } from "../layout/Page"
 import { LeaderTable } from "./leader-table/LeaderTable"
 import { Pagination } from "./Pagination"
@@ -13,10 +14,17 @@ import { Sidebar } from "./Sidebar"
 
 export const Leaderboard = () => {
 
-    const [seasonId, setSeasonId] = useState<string>(SEASON_15_ID)
-    const [playlistId, setPlaylistId] = useState<string>(PLAYLIST_1v1_RANKED)
+    const [season, setSeason] = useState<Season>(seasonData[0])
+    const seasonId = season?.View.Identity
+    const defaultPlaylist = findPlaylist(addHyphens((season.View.HW2Season.Playlists as PlaylistsEntity[])[0]?.Identity as string));
+    const [playlist, setPlaylist] = useState<Playlist>(defaultPlaylist as Playlist)
 
-    const {leaderboardData} = useLeaderboard(seasonId, playlistId)
+    useEffect(() => {
+        const defaultPlaylist = findPlaylist(addHyphens((season.View.HW2Season.Playlists as PlaylistsEntity[])[0]?.Identity as string));
+        setPlaylist(defaultPlaylist as Playlist)
+    }, [season])
+
+    const {leaderboardData} = useLeaderboard(addHyphens(seasonId), addHyphens(playlist.View.Identity))
 
     const {gamerTag} = useContext(GlobalContext)
 
@@ -28,7 +36,7 @@ export const Leaderboard = () => {
             <div className="region">
                 <div className="content">
                     <div className="hw2--leaderboards">
-                        <Sidebar onPlaylist={(playlist) => setPlaylistId(addHyphens(playlist.View.Identity))}/>
+                        <Sidebar season={season} playlist={playlist} onSeason={(s) => {setSeason(s)}} onPlaylist={(playlist) => setPlaylist(playlist)}/>
                         <div className="leaderboard">
                             <Pagination page={page} total={leaderboardData.length} onChange={(page) => setPage(page)}/>
                             <PlayerInfo gamerTag={gamerTag}/>
