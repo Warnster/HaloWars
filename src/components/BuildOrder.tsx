@@ -27,6 +27,10 @@ export const BuildOrder = ({ match }: { match: Match }) => {
     "TechResearched",
   ];
 
+  const ignoreSquadIds = [
+    "pow_gp_scatterbombDummy_01"
+  ]
+
   const buildingTracker: {
     [key: number]: {
       BuildingId: string;
@@ -96,6 +100,7 @@ export const BuildOrder = ({ match }: { match: Match }) => {
                     event.NewBuildingId.toLowerCase();
                 }
                 if (ignoreEvents.includes(event.EventName)) return;
+                if(ignoreSquadIds.includes(event.SquadId)) return;
                 if (event.TimeSinceStartMilliseconds == 0) return;
                 let image = "";
                 let name = "";
