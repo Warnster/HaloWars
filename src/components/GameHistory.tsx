@@ -98,7 +98,7 @@ export const GameHistory = () => {
                   </div>
                 </div>
                 <div className="info--type">
-                  <p className="text--large">{playlistName}</p>
+                  <p className="text--medium">{playlistName}</p>
                   <p className="text--smallest">Deathmatch - {game.Teams[1].TeamSize}v{game.Teams[2].TeamSize}</p>
                 </div>
                 <div className="info--leader">
@@ -120,7 +120,7 @@ export const GameHistory = () => {
                     />
                   </div>
                   <div className="text">
-                    <p className="text--large">
+                    <p className="text--medium">
                       {
                         leaderData[game.LeaderId].DisplayInfo.View
                           .HW2LeaderDisplayInfo?.Name
@@ -130,7 +130,7 @@ export const GameHistory = () => {
                   </div>
                 </div>
                 <div className="info--date">
-                  <p className="text--large">
+                  <p className="text--medium">
                     <time>{dateFormat}</time>
                   </p>
                   {!isLast24Hours(game.MatchStartDate.ISO8601Date) && (
